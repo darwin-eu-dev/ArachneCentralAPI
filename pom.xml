@@ -602,6 +602,16 @@
     </build>
 
     <repositories>
+        <!-- Put central first so that it is the highest priority, is faster than downloading dependencies from OHDSI -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <layout>default</layout>
+            <url>https://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>community-libs-snapshot-local</id>
             <name>community-libs-snapshot-local</name>
@@ -631,23 +641,7 @@
         <repository>
             <id>ohdsi</id>
             <name>repo.ohdsi.org</name>
-            <url>http://repo.ohdsi.org:8085/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>ohdsi.thirdparty</id>
-            <name>repo.ohdsi.org</name>
-            <url>http://repo.ohdsi.org:8085/nexus/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <id>ohdsi.snapshots</id>
-            <name>repo.ohdsi.org-snapshots</name>
-            <url>http://repo.ohdsi.org:8085/nexus/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <url>https://repo.ohdsi.org/nexus/content/repositories/releases</url>
         </repository>
     </repositories>
 
