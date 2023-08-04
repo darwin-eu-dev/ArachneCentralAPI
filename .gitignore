@@ -123,3 +123,6 @@ target
 **/resources/application*-dev-*.properties
 **/resources/application*-dev-*.yaml
 **/resources/application*-dev-*.yml
+
+### Mac
+.DS_Store
