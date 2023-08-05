@@ -62,6 +62,6 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           # wait 5 seconds then restart the app with new image
-          # sleep 5
-          # az webapp restart --name $(app-name) --resource-group $(resource-group-name)
+          sleep 5
+          az webapp restart --name $(app-name) --resource-group $(resource-group-name)
 
