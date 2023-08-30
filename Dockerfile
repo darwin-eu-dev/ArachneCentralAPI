@@ -26,16 +26,42 @@ COPY ./src/main ./src/main
 RUN mvn clean package -DskipTests -DskipDocker -P dev
 
 
-FROM eclipse-temurin:8-jre-alpine
+FROM solr:8
+
+WORKDIR /solr_config
+COPY ./solr_config/conf /solr_config
+RUN solr start -c && \
+    solr create_collection -c users -n arachne-config && \
+    solr create_collection -c data-sources -n arachne-config && \
+    solr create_collection -c studies -n arachne-config && \
+    solr create_collection -c analyses -n arachne-config && \
+    solr create_collection -c analysis-files -n arachne-config && \
+    solr create_collection -c papers -n arachne-config && \
+    solr create_collection -c paper-protocols -n arachne-config && \
+    solr create_collection -c paper-files -n arachne-config && \
+    solr create_collection -c submissions -n arachne-config && \
+    solr create_collection -c insights -n arachne-config && \
+    solr create_collection -c result-files -n arachne-config && \
+    solr create_collection -c study-files -n arachne-config && \
+    solr zk upconfig -n arachne-config -d /solr_config -z localhost:9983 && \
+    solr stop -all
+
+USER root
 
 WORKDIR /app
 
-RUN apk update && apk add libreoffice libreoffice-writer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libreoffice libreoffice-writer && \
+    apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /var/arachne/files/jcr/workspaces && chmod -R 777 /var/arachne/files/jcr
 
-RUN adduser -D service -S -g "First"
 RUN chmod -R 777 /app
-USER service
+
+USER $SOLR_UID
 COPY --from=BUILDER /tmp/maven/target/portal-exec.jar ./portal.jar
-ENTRYPOINT ["java", "-jar", "portal.jar"]
+COPY container-start.sh ./container-start.sh
+
 EXPOSE 8443
+
+ENTRYPOINT ["./container-start.sh"]
