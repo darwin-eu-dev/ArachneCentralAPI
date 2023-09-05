@@ -79,7 +79,7 @@ public abstract class BaseDataSource implements IDataSource, Serializable, HasAr
     protected String name;
     @NotNull
     @SolrFieldAnno(name = "dataNode", query = true, extractor = DataSourceSolrExtractors.DataNodeNameExtractor.class)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     protected DataNode dataNode;
     @Transient
     protected Set<ArachnePermission> permissions;

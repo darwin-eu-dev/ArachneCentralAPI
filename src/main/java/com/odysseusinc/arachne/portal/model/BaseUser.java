@@ -177,7 +177,7 @@ public class BaseUser implements IUser, Serializable {
     @Column
     protected String username;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     protected Set<DataNodeUser> dataNodeUsers = new HashSet<>();
 
     @ManyToMany(targetEntity = Tenant.class, fetch = FetchType.EAGER)

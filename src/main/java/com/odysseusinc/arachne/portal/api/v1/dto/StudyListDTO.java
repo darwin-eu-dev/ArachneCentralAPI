@@ -43,6 +43,7 @@ public class StudyListDTO {
     private Boolean favourite;
     private PermissionsDTO permissions;
     private Boolean privacy;
+    private boolean actionRequired;
 
     public String getDescription() {
 
@@ -183,5 +184,13 @@ public class StudyListDTO {
     public void setPrivacy(Boolean privacy) {
 
         this.privacy = privacy;
+    }
+
+    public boolean getActionRequired() {
+        return actionRequired;
+    }
+
+    public void setActionRequired(boolean actionRequired) {
+        this.actionRequired = actionRequired;
     }
 }

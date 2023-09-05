@@ -54,7 +54,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice libreoffice-writer && \
     apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/arachne/files/jcr/workspaces && chmod -R 777 /var/arachne/files/jcr
+RUN mkdir -p /home/files/jcr/workspaces && chmod -R 777 /home/files/jcr
 
 RUN chmod -R 777 /app
 

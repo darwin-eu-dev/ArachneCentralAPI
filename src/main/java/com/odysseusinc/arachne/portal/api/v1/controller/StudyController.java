@@ -28,7 +28,6 @@ import com.odysseusinc.arachne.portal.api.v1.dto.StudyListDTO;
 import com.odysseusinc.arachne.portal.api.v1.dto.WorkspaceDTO;
 import com.odysseusinc.arachne.portal.model.AbstractUserStudyListItem;
 import com.odysseusinc.arachne.portal.model.Analysis;
-import com.odysseusinc.arachne.portal.model.DataSource;
 import com.odysseusinc.arachne.portal.model.IDataSource;
 import com.odysseusinc.arachne.portal.model.Study;
 import com.odysseusinc.arachne.portal.model.StudyViewItem;
@@ -97,7 +96,6 @@ public class StudyController extends BaseStudyController<Study, IDataSource, Ana
 
     @Override
     protected StudyListDTO convertListItem(AbstractUserStudyListItem userStudyItem) {
-
         return conversionService.convert(userStudyItem, StudyListDTO.class);
     }
 }

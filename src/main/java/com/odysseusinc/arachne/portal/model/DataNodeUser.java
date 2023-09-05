@@ -46,7 +46,7 @@ public class DataNodeUser {
     @JoinColumn(name = "user_id")
     private IUser user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "datanode_id")
     private DataNode dataNode;
 

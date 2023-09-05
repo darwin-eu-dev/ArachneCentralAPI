@@ -49,12 +49,12 @@ public class BuildNumberController {
         Properties properties = new Properties();
         try {
             properties.load(is);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             log.warn("Unable to read [{}], version info unavailable. Error details: {}.", SOURCE, e.getMessage());
         }
-        this.projectVersion = properties.getProperty("version", "dev");;
+        this.projectVersion = properties.getProperty("version", "dev");
         this.buildNumber = properties.getProperty("buildNumber", "dev");
-        this.buildId = properties.getProperty("buildId", "dev");;
+        this.buildId = properties.getProperty("buildId", "dev");
         log.info("Version [{}], build [{}] @ [{}]", projectVersion, buildNumber, buildId);
     }
 
