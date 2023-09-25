@@ -22,8 +22,6 @@
 
 package com.odysseusinc.arachne.portal.api.v1.controller;
 
-import static com.odysseusinc.arachne.portal.api.v1.controller.util.ControllerUtils.emulateEmailSent;
-
 import com.google.common.collect.ImmutableMap;
 import com.odysseusinc.arachne.commons.api.v1.dto.CommonAuthMethodDTO;
 import com.odysseusinc.arachne.commons.api.v1.dto.CommonAuthenticationRequest;
@@ -81,12 +79,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import static com.odysseusinc.arachne.portal.api.v1.controller.util.ControllerUtils.emulateEmailSent;
+
 public abstract class BaseAuthenticationController extends BaseController<DataNode, IUser> {
 
     private static final Logger log = LoggerFactory.getLogger(BaseAuthenticationController.class);
 
     @Value("${security.registration.enabled:true}")
     private boolean registrationEnabled;
+    @Value("${security.hide-internal-login:false}")
+    private boolean disableLocal;
 
     @Value("${security.login.collapse:#{null}}")
     private String collapseLogin;
@@ -136,28 +138,27 @@ public abstract class BaseAuthenticationController extends BaseController<DataNo
     @RequestMapping(value = "/api/v1/auth/methods", method = RequestMethod.GET)
     public JsonResult<Map<String, Map<String, Object>>> authMethods() {
         Map<String, Map<String, Object>> providers = Optional.ofNullable(oAuth2ClientProperties).map(oauth ->
-            oauth.getProvider().entrySet().stream().collect(
-                    Collectors.toMap(Map.Entry::getKey, entry  -> (Map<String, Object>) ImmutableMap.<String, Object>of(
-                            "url", "/oauth2/authorization/" + entry.getKey(),
-                            "text", entry.getValue().getText(),
-                            "image", entry.getValue().getImage()
-                    ))
-            )
+                oauth.getProvider().entrySet().stream().collect(
+                        Collectors.toMap(Map.Entry::getKey, entry -> (Map<String, Object>) ImmutableMap.<String, Object>of(
+                                "url", "/oauth2/authorization/" + entry.getKey(),
+                                "text", entry.getValue().getText(),
+                                "image", entry.getValue().getImage()
+                        ))
+                )
         ).orElseGet(HashMap::new);
         Map<String, Map<String, Object>> providersSorted = new LinkedHashMap<>();
-        String internalLoginMethod = authenticationHelperService.getCurrentMethodType();
-        ImmutableMap.Builder<String, Object> internalLoginOptions = ImmutableMap.<String, Object>builder()
-                .put("registration", registrationEnabled && !"LDAP".equals(internalLoginMethod));
-        // The order in which providers are listed in this response defines the order in which they are shown on UI
-        // If internal login is collapsed it should be shown last.
-        if (collapseLogin == null) {
+        if (!disableLocal) {
+            String internalLoginMethod = authenticationHelperService.getCurrentMethodType();
+            ImmutableMap.Builder<String, Object> internalLoginOptions = ImmutableMap.<String, Object>builder()
+                    .put("registration", registrationEnabled && !"LDAP".equals(internalLoginMethod));
+            // The order in which providers are listed in this response defines the order in which they are shown on UI
+            // If internal login is collapsed it should be shown last.
+            if (collapseLogin != null) {
+                internalLoginOptions.put("collapse", collapseLogin);
+            }
             providersSorted.put(internalLoginMethod, internalLoginOptions.build());
-            providersSorted.putAll(providers);
-        } else {
-            providersSorted.putAll(providers);
-            providersSorted.put(internalLoginMethod, internalLoginOptions.put("collapse", collapseLogin).build());
         }
-
+        providersSorted.putAll(providers);
         return new JsonResult<>(JsonResult.ErrorCode.NO_ERROR, providersSorted);
     }
 

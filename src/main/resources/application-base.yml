@@ -171,6 +171,7 @@ authenticator:
           lastName: lastname
 
 security:
+  hide-internal-login: false
   method: db
   jwt:
     token:
