@@ -1,7 +1,6 @@
 package com.odysseusinc.arachne.portal.security;
 
 import com.google.common.collect.ImmutableMap;
-import com.odysseusinc.arachne.portal.config.WebSecurityConfig;
 import com.odysseusinc.arachne.portal.model.ExternalLogin;
 import com.odysseusinc.arachne.portal.model.IUser;
 import com.odysseusinc.arachne.portal.model.User;
@@ -96,9 +95,6 @@ public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
                     issuer, safeSub, email, createOrFindUser(method, attributes, safeSub, email)
             );
             IUser user = login.getUser();
-            String base = "https://arachne-central.azurewebsites.net"; //  WebSecurityConfig.getDefaultPortalURI() != null ? WebSecurityConfig.portalUrl.get() : "";
-            this.setDefaultTargetUrl(base);
-            log.info("This is the base url we should be going to {}", base);
             if (user.getEnabled()) {
                 String username = ObjectUtils.firstNonNull(user.getUsername(), user.getEmail());
                 // This is a bit ugly, however
@@ -109,11 +105,11 @@ public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
                 Cookie cookie = new Cookie(header, token);
                 cookie.setSecure(true);
                 cookie.setHttpOnly(true);
-                cookie.setPath(base + "/");
+                cookie.setPath("/");
                 response.addCookie(cookie);
                 super.onAuthenticationSuccess(request, response, authentication);
             } else {
-                response.sendRedirect(base + "/auth/login?message=inactive");
+                response.sendRedirect("/auth/login?message=inactive");
             }
         }
     }
