@@ -50,11 +50,11 @@ spring:
           starttls:
             enable: true
             required: true
-  mvc:
-    view:
-      prefix: /
-      suffix: .html
-    throw-exception-if-no-handler-found: true
+#  mvc:
+#    view:
+#      prefix: /
+#      suffix: .html
+#    throw-exception-if-no-handler-found: true
   thymeleaf:
     enabled: false
   servlet:

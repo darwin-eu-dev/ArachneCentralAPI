@@ -8,18 +8,6 @@ import com.odysseusinc.arachne.portal.model.User;
 import com.odysseusinc.arachne.portal.service.ExternalLoginService;
 import com.odysseusinc.arachne.portal.service.ProfessionalTypeService;
 import com.odysseusinc.arachne.portal.service.UserService;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.ohdsi.authenticator.service.authentication.TokenProvider;
 import org.slf4j.Logger;
@@ -33,6 +21,19 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Component
 public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -97,6 +98,7 @@ public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
             IUser user = login.getUser();
             String base = WebSecurityConfig.getDefaultPortalURI() != null ? WebSecurityConfig.portalUrl.get() : "";
             this.setDefaultTargetUrl(base);
+            log.info("This is the base url we should be going to {}", base);
             if (user.getEnabled()) {
                 String username = ObjectUtils.firstNonNull(user.getUsername(), user.getEmail());
                 // This is a bit ugly, however
