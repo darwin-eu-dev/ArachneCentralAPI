@@ -10,6 +10,7 @@ import com.odysseusinc.arachne.portal.service.ProfessionalTypeService;
 import com.odysseusinc.arachne.portal.service.UserService;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -95,11 +96,13 @@ public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
             );
             IUser user = login.getUser();
             String base = WebSecurityConfig.getDefaultPortalURI() != null ? WebSecurityConfig.portalUrl.get() : "";
+            this.setDefaultTargetUrl(base);
             if (user.getEnabled()) {
                 String username = ObjectUtils.firstNonNull(user.getUsername(), user.getEmail());
                 // This is a bit ugly, however
                 Map<String, Object> additionalInfo = ImmutableMap.of("method", user.getOrigin());
-                String token = tokenProvider.createToken(username, additionalInfo, null);
+                Date exp = new Date(new Date().getTime() + 86400000L); // 24 hours
+                String token = tokenProvider.createToken(username, additionalInfo, exp);
                 // TODO Put more stuff in token???
                 Cookie cookie = new Cookie(header, token);
                 cookie.setSecure(true);
