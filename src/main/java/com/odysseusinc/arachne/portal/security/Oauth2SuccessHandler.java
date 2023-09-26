@@ -96,7 +96,7 @@ public class Oauth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
                     issuer, safeSub, email, createOrFindUser(method, attributes, safeSub, email)
             );
             IUser user = login.getUser();
-            String base = WebSecurityConfig.getDefaultPortalURI() != null ? WebSecurityConfig.portalUrl.get() : "";
+            String base = "https://arachne-central.azurewebsites.net"; //  WebSecurityConfig.getDefaultPortalURI() != null ? WebSecurityConfig.portalUrl.get() : "";
             this.setDefaultTargetUrl(base);
             log.info("This is the base url we should be going to {}", base);
             if (user.getEnabled()) {
