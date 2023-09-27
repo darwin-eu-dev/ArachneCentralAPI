@@ -113,7 +113,7 @@ hs_err_pid*
 
 
 # Static content
-**/resources/public
+#**/resources/public
 
 # build dir
 target
