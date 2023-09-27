@@ -23,7 +23,7 @@ RUN mvn dependency:go-offline
 
 COPY google_checkstyle.xml .
 COPY ./src/main ./src/main
-RUN mvn clean package -DskipTests -DskipDocker -P dev
+RUN mvn package -DskipTests -DskipDocker -P dev
 
 
 FROM solr:8
