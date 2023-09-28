@@ -1,7 +1,23 @@
+# FIRST WE DOWNLOAD AND BUILD THE UI
+# NODE 16+ VERSIONS NOT SUPPORTED
+FROM node:14.21-buster AS UI-BUILDER
+
+# INSTALL DEPS
+WORKDIR /arachne
+
+RUN git clone https://github.com/darwin-eu-dev/ArachneUI.git
+
+WORKDIR ./ArachneUI
+
+RUN npm install
+RUN npm run build
+
+
 FROM maven:3.9.3-eclipse-temurin-17-alpine AS BUILDER
 
 WORKDIR /tmp/maven
 
+# THIS HAS BEEN WHEN THE ODYSSEUS NEXUS WAS NOT AVAILABLE AND THE BUILD IN THE AZURE PIPELINE WAS FAILING
 COPY lib ./lib
 RUN mvn "org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file" -Dfile=lib/arachne-common-types-1.19.0.jar
 RUN mvn "org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file" -Dfile=lib/arachne-common-utils-1.19.0.jar
@@ -23,9 +39,10 @@ RUN mvn dependency:go-offline
 
 COPY google_checkstyle.xml .
 COPY ./src/main ./src/main
+COPY --from=UI-BUILDER /arachne/ArachneUI/public ./src/main/resources/public
 RUN mvn package -DskipTests -DskipDocker -P dev
 
-
+# WE ARE TAKING SOLR AS BASE IMAGE, IT IS BUILT ON TOP OF JAVA ADOPTIUM
 FROM solr:8
 
 WORKDIR /solr_config
@@ -50,6 +67,7 @@ USER root
 
 WORKDIR /app
 
+# LIBRE OFFICE IS USED FOR SOME PDF FUNCTIONALITY, APP DOES NOT RUN WITHOUT IT
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice libreoffice-writer && \
     apt-get -y autoremove && rm -rf /var/lib/apt/lists/*
