@@ -1,4 +1,4 @@
-TRUNCATE TABLE study_stypes CASCADE;
+TRUNCATE TABLE study_types CASCADE;
 
 INSERT INTO study_types (name)
 VALUES ('Complex')
